@@ -183,3 +183,6 @@ tmp/
 
 
 .kaggle/
+
+# Environment variables
+.env

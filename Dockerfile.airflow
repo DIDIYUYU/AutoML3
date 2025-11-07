@@ -1,0 +1,9 @@
+FROM apache/airflow:2.7.0
+
+USER root
+RUN apt-get update && apt-get install -y gcc python3-dev curl && rm -rf /var/lib/apt/lists/*
+RUN mkdir -p /mlflow && chown -R airflow:root /mlflow && chmod -R 775 /mlflow
+
+USER airflow
+COPY requirements.txt /tmp/requirements.txt
+RUN pip install --user -r /tmp/requirements.txt

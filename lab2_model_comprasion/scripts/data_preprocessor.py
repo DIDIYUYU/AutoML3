@@ -42,8 +42,12 @@ def preprocess_titanic_data(train_df, test_df):
     if not validate_titanic_data(test_df, test_expected_cols):
         raise ValueError("Ошибка валидации тестовых данных")
     
+    # Создаем копии для безопасной обработки
+    train_copy = train_df.copy()
+    test_copy = test_df.copy()
+    
     # Объединяем для согласованной обработки
-    combined = pd.concat([train_df, test_df], ignore_index=True)
+    combined = pd.concat([train_copy, test_copy], ignore_index=True, sort=False)
     
     # Логируем исходные размеры
     logging.info(f"Исходные данные - Train: {train_df.shape}, Test: {test_df.shape}")
@@ -83,6 +87,13 @@ def preprocess_titanic_data(train_df, test_df):
         logging.info("Созданы признаки FamilySize и IsAlone")
     else:
         logging.warning("Не удалось создать признаки FamilySize и IsAlone - отсутствуют колонки SibSp или Parch")
+        # Создаем фиктивные признаки, если исходные отсутствуют
+        if 'SibSp' not in combined.columns:
+            combined['SibSp'] = 0
+        if 'Parch' not in combined.columns:
+            combined['Parch'] = 0
+        combined['FamilySize'] = combined['SibSp'] + combined['Parch'] + 1
+        combined['IsAlone'] = (combined['FamilySize'] == 1).astype(int)
     
     # Кодирование категориальных переменных
     label_encoders = {}

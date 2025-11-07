@@ -8,11 +8,30 @@ import logging
 import sys
 import os
 
-# Добавляем путь, чтобы пакет `scripts` был виден как модуль
-sys.path.append('/opt/airflow')
+# Добавляем пути для импорта скриптов lab1
+sys.path.append('/opt/airflow/scripts/lab1')
 
-from scripts.data_loader import download_titanic_data, save_data_locally, load_data_from_local
-from scripts.data_preprocessor import preprocess_titanic_data
+try:
+    from data_loader import download_titanic_data, save_data_locally, load_data_from_local
+    from data_preprocessor import preprocess_titanic_data
+except ImportError as e:
+    logging.error(f"Ошибка импорта скриптов: {e}")
+    # Fallback импорт
+    import importlib.util
+    
+    # Импорт data_loader
+    spec = importlib.util.spec_from_file_location("data_loader", "/opt/airflow/scripts/lab1/data_loader.py")
+    data_loader = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(data_loader)
+    download_titanic_data = data_loader.download_titanic_data
+    save_data_locally = data_loader.save_data_locally
+    load_data_from_local = data_loader.load_data_from_local
+    
+    # Импорт data_preprocessor
+    spec = importlib.util.spec_from_file_location("data_preprocessor", "/opt/airflow/scripts/lab1/data_preprocessor.py")
+    data_preprocessor = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(data_preprocessor)
+    preprocess_titanic_data = data_preprocessor.preprocess_titanic_data
 
 # Настройка MLflow будет выполнена внутри функций задач
 
