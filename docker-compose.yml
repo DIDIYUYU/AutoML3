@@ -40,6 +40,12 @@ services:
       - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
       - AIRFLOW__CORE__DAGS_FOLDER=/opt/airflow/dags
       - AIRFLOW__WEBSERVER__EXPOSE_CONFIG=true
+      - AIRFLOW__CORE__PARALLELISM=128
+      - AIRFLOW__CORE__MAX_ACTIVE_TASKS_PER_DAG=64
+      - AIRFLOW__CORE__MAX_ACTIVE_RUNS_PER_DAG=16
+      - AIRFLOW__SCHEDULER__MAX_TIS_PER_QUERY=64
+      - AIRFLOW__CORE__DAG_CONCURRENCY=64
+      - AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION=False
       - KAGGLE_CONFIG_DIR=/home/airflow/.kaggle
       - KAGGLE_USERNAME=${KAGGLE_USERNAME:-}
       - KAGGLE_KEY=${KAGGLE_KEY:-}
@@ -48,6 +54,9 @@ services:
       - ./lab1_titanic/scripts:/opt/airflow/scripts/lab1
       - ./lab2_model_comprasion/dags:/opt/airflow/dags/lab2
       - ./lab2_model_comprasion/scripts:/opt/airflow/scripts/lab2
+      - ./lab3_dynamic_pipeline/dags:/opt/airflow/dags/lab3
+      - ./lab3_dynamic_pipeline/scripts:/opt/airflow/scripts/lab3
+      - ./lab3_dynamic_pipeline/config:/opt/airflow/config/lab3
       - ./.kaggle:/home/airflow/.kaggle:ro
       - mlflow_data:/mlflow
     ports:
@@ -74,6 +83,13 @@ services:
       - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
       - AIRFLOW__CORE__DAGS_FOLDER=/opt/airflow/dags
       - AIRFLOW__WEBSERVER__EXPOSE_CONFIG=true
+      - AIRFLOW__CORE__PARALLELISM=128
+      - AIRFLOW__CORE__MAX_ACTIVE_TASKS_PER_DAG=64
+      - AIRFLOW__CORE__MAX_ACTIVE_RUNS_PER_DAG=16
+      - AIRFLOW__SCHEDULER__MAX_TIS_PER_QUERY=64
+      - AIRFLOW__CORE__DAG_CONCURRENCY=64
+      - AIRFLOW__CORE__DEFAULT_POOL_TASK_SLOT_COUNT=128
+      - AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION=False
       - KAGGLE_CONFIG_DIR=/home/airflow/.kaggle
       - KAGGLE_USERNAME=${KAGGLE_USERNAME:-}
       - KAGGLE_KEY=${KAGGLE_KEY:-}
@@ -82,6 +98,9 @@ services:
       - ./lab1_titanic/scripts:/opt/airflow/scripts/lab1
       - ./lab2_model_comprasion/dags:/opt/airflow/dags/lab2
       - ./lab2_model_comprasion/scripts:/opt/airflow/scripts/lab2
+      - ./lab3_dynamic_pipeline/dags:/opt/airflow/dags/lab3
+      - ./lab3_dynamic_pipeline/scripts:/opt/airflow/scripts/lab3
+      - ./lab3_dynamic_pipeline/config:/opt/airflow/config/lab3
       - ./.kaggle:/home/airflow/.kaggle:ro
       - mlflow_data:/mlflow
     depends_on:
